@@ -1,1 +1,2 @@
-0,gearoid@gmail.com,123,Admin
+0,g@gmail.com,123,Admin
+1,bvt@outlook.com,J1Q3l7&0N6s3,User

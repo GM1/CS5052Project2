@@ -76,7 +76,7 @@ public class Login{
 					null,null,null);
 			
 			if (choice == JOptionPane.YES_OPTION)
-							{RegisterUser();} 	
+							{registerAdmin();} 	
 					else	{JOptionPane.showMessageDialog(null, "The program will terminate","",JOptionPane.INFORMATION_MESSAGE);}
 		}
 		
@@ -171,7 +171,7 @@ public class Login{
 					if (choice == JOptionPane.YES_OPTION)
 						{
 							JOptionPane.showMessageDialog(null, "You'll now be registered","Registration",JOptionPane.INFORMATION_MESSAGE);
-							RegisterUser();
+							registerAdmin();
 						} 	
 						
 					else{JOptionPane.showMessageDialog(null, "The program will terminate","",JOptionPane.INFORMATION_MESSAGE);}
@@ -182,7 +182,7 @@ public class Login{
 		else {
 				JOptionPane.showMessageDialog(null, "No existing users in the database.\n" + "You'll now be registered...","",JOptionPane.INFORMATION_MESSAGE);
 		
-				RegisterUser();	
+				registerAdmin();	
 		
 			}
 			
@@ -249,7 +249,7 @@ public class Login{
 
 /**
 *
-* RegisterUser()
+* registerAdmin()
 * A method for registering new users...
 * Is passed no value and returns nothing
 * @IOException
@@ -257,7 +257,7 @@ public class Login{
 *
 */
 
-	public static void RegisterUser() throws IOException,InterruptedException
+	public static void registerAdmin() throws IOException,InterruptedException
 	{
 			
 			File LoginDetails = new File("Users.txt");
@@ -328,10 +328,9 @@ public class Login{
 									FileWriter fw = new FileWriter("Users.txt", true);
 									PrintWriter pw = new PrintWriter(fw);
 									
-									if (!dataFilePopulated)
-										pw.println(currentLineNumber + "," + email + "," + passWord + "," + "Admin");
-									else if (dataFilePopulated)
-										{pw.println(currentLineNumber + "," + email + "," + passWord + "," + "User");}
+									
+									pw.println(currentLineNumber + "," + email + "," + passWord + "," + "Admin");
+									
 									
 									pw.close();
 									fw.close();
@@ -375,6 +374,105 @@ public class Login{
 					while(checker == false);
 					
 	}	
+	
+	public static void registerRegularUser() throws IOException
+	{
+		File LoginDetails = new File("Users.txt");
+			
+		FileReader fr = new FileReader("Users.txt");
+			
+		LineNumberReader lnr = new LineNumberReader(fr);
+			
+		lnr.skip(Long.MAX_VALUE);
+						
+		String passWord = "placeholderPassword";
+		JTextField userEmail = new JTextField(50);
+					
+		JPanel RegisterPanel = new JPanel();
+		RegisterPanel.add(new JLabel("Email Address:"));
+		RegisterPanel.add(userEmail);
+		//loginPanel.add(Box.createVerticalStrut(30)); //Spacer?
+						
+						boolean checker = false; 
+						
+							int i =0;
+							do{
+								
+								int result = JOptionPane.showConfirmDialog(null, RegisterPanel, "Registration: Please enter the new users chosen Email address"
+								, JOptionPane.OK_CANCEL_OPTION);
+							 
+								if (result == JOptionPane.OK_OPTION) 
+								{
+										String email = (userEmail.getText()).trim();
+								
+										boolean validate = Validate.uniqueEmail(email);
+										boolean checkEmail = Validate.checkEmail(email);
+										 if (validate == false || checkEmail == false)
+										 {
+											 System.out.println("Entered if statement");
+											 
+											 if (checkEmail == false)
+												JOptionPane.showMessageDialog(null, "Enter a correctly formatted email address","",JOptionPane.INFORMATION_MESSAGE);
+											 
+											 else if ((email.length() == 0))
+												JOptionPane.showMessageDialog(null, "Neither Email address nor password fields may be empty...","",JOptionPane.INFORMATION_MESSAGE);
+											 
+											 if (email.length() != 0)
+												JOptionPane.showMessageDialog(null, "This Email exists already. Try again","",JOptionPane.INFORMATION_MESSAGE);
+										
+										}
+										
+								
+									 else if (validate == true && (email.length() != 0) )
+										{
+											JOptionPane.showMessageDialog(null, "Creating new user","",JOptionPane.INFORMATION_MESSAGE);checker = true;
+										
+											currentLineNumber = lnr.getLineNumber();	
+									 
+										try{
+											
+											FileWriter fw = new FileWriter("Users.txt", true);
+											PrintWriter pw = new PrintWriter(fw);
+											
+											
+											pw.println(currentLineNumber + "," + email + "," + GeneratePassword.generate() + "," + "User");
+											
+											pw.close();
+											fw.close();
+											}
+											
+										catch(IOException e){e.printStackTrace();}
+										
+									  }
+									 
+									 
+								}
+								
+								else if (result == JOptionPane.CANCEL_OPTION)
+									{
+										
+										int choice = JOptionPane.showOptionDialog(null,
+										"Would you like to leave the program?",
+										"Choose one option",
+										JOptionPane.YES_NO_OPTION,
+										JOptionPane.QUESTION_MESSAGE,
+										null,null,null);
+						
+						
+										if (choice == JOptionPane.YES_OPTION)
+											{
+												checker = true;
+											} 	
+											
+										else{checker = false;}
+										
+									}
+							}
+							
+							while(checker == false);
+		
+	}
+	
 
 
 
